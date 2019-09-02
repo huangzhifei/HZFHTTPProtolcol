@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface HZFHTTPProtocol : NSURLProtocol
 
++ (void)start;
+
 @end
 
 NS_ASSUME_NONNULL_END

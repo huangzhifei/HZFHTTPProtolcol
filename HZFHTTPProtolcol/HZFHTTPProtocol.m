@@ -25,6 +25,10 @@ static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
 
 @implementation HZFHTTPProtocol
 
++ (void)start {
+    [NSURLProtocol registerClass:[self class]];
+}
+
 + (BOOL)canInitWithRequest:(NSURLRequest *)request {
     if (![request.URL.scheme isEqualToString:@"http"] &&
         ![request.URL.scheme isEqualToString:@"https"]) {
@@ -33,6 +37,7 @@ static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
     if ([NSURLProtocol propertyForKey:HZFHTTPHandledIdentifier inRequest:request]) {
         return NO;
     }
+    
     return YES;
 }
 
@@ -43,14 +48,16 @@ static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
 }
 
 - (void)startLoading {
+    NSMutableURLRequest *mutableRequest = [self.request mutableCopy];
+    [mutableRequest addValue:self.hzf_identifier forHTTPHeaderField:@"hzf_request_id"];
+    self.hzf_request = [mutableRequest copy];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
                                                           delegate:self
                                                      delegateQueue:nil];
     NSURLSessionDataTask *task = [session dataTaskWithRequest:self.request];
     self.hzf_dataTask = task;
-    self.hzf_request = self.request;
     self.start_time = [[NSDate date] timeIntervalSince1970];
-    NSLog(@"protocol 请求接口开始->url: %@ identifier: %@", self.hzf_request, self.hzf_identifier);
+    NSLog(@"protocol 请求接口开始->url: %@ identifier: %@", self.hzf_request.URL, self.hzf_identifier);
     [self.hzf_dataTask resume];
 }
 
@@ -59,7 +66,7 @@ static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
     NSTimeInterval cost = [[NSDate date] timeIntervalSince1970] - self.start_time;
     //获取请求方法
     NSString *requestMethod = self.hzf_request.HTTPMethod;
-    NSLog(@"protocol 请求接口结束->url: %@ method: %@ identifier: %@ cost: %lfms", self.hzf_request, requestMethod, self.hzf_identifier, cost * 1000);
+    NSLog(@"protocol 请求接口结束->url: %@ method: %@ identifier: %@ cost: %lfms", self.hzf_request.URL, requestMethod, self.hzf_identifier, cost * 1000);
     
     //获取请求头
     NSDictionary *headers = self.hzf_request.allHTTPHeaderFields;

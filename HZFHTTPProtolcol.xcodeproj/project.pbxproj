@@ -17,7 +17,6 @@
 		75E2ACD02319918400DF0EE0 /* HZFHTTPProtolcolUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 75E2ACCF2319918400DF0EE0 /* HZFHTTPProtolcolUITests.m */; };
 		75E2ACE1231991FE00DF0EE0 /* HZFHTTPProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 75E2ACDD231991FE00DF0EE0 /* HZFHTTPProtocol.m */; };
 		75E2ACE2231991FE00DF0EE0 /* NSURLSessionConfiguration+HZFURLProtocolSwizzling.m in Sources */ = {isa = PBXBuildFile; fileRef = 75E2ACDE231991FE00DF0EE0 /* NSURLSessionConfiguration+HZFURLProtocolSwizzling.m */; };
-		75E2ACE52319923B00DF0EE0 /* NSURLSessionTask+HZFURLSessionTaskStartTime.m in Sources */ = {isa = PBXBuildFile; fileRef = 75E2ACE32319923B00DF0EE0 /* NSURLSessionTask+HZFURLSessionTaskStartTime.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,8 +57,6 @@
 		75E2ACDE231991FE00DF0EE0 /* NSURLSessionConfiguration+HZFURLProtocolSwizzling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURLSessionConfiguration+HZFURLProtocolSwizzling.m"; sourceTree = "<group>"; };
 		75E2ACDF231991FE00DF0EE0 /* HZFHTTPProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HZFHTTPProtocol.h; sourceTree = "<group>"; };
 		75E2ACE0231991FE00DF0EE0 /* NSURLSessionConfiguration+HZFURLProtocolSwizzling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLSessionConfiguration+HZFURLProtocolSwizzling.h"; sourceTree = "<group>"; };
-		75E2ACE32319923B00DF0EE0 /* NSURLSessionTask+HZFURLSessionTaskStartTime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURLSessionTask+HZFURLSessionTaskStartTime.m"; sourceTree = "<group>"; };
-		75E2ACE42319923B00DF0EE0 /* NSURLSessionTask+HZFURLSessionTaskStartTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLSessionTask+HZFURLSessionTaskStartTime.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,8 +107,6 @@
 		75E2ACAA2319918200DF0EE0 /* HZFHTTPProtolcol */ = {
 			isa = PBXGroup;
 			children = (
-				75E2ACE42319923B00DF0EE0 /* NSURLSessionTask+HZFURLSessionTaskStartTime.h */,
-				75E2ACE32319923B00DF0EE0 /* NSURLSessionTask+HZFURLSessionTaskStartTime.m */,
 				75E2ACDF231991FE00DF0EE0 /* HZFHTTPProtocol.h */,
 				75E2ACDD231991FE00DF0EE0 /* HZFHTTPProtocol.m */,
 				75E2ACE0231991FE00DF0EE0 /* NSURLSessionConfiguration+HZFURLProtocolSwizzling.h */,
@@ -280,7 +275,6 @@
 				75E2ACE2231991FE00DF0EE0 /* NSURLSessionConfiguration+HZFURLProtocolSwizzling.m in Sources */,
 				75E2ACB02319918200DF0EE0 /* ViewController.m in Sources */,
 				75E2ACBB2319918400DF0EE0 /* main.m in Sources */,
-				75E2ACE52319923B00DF0EE0 /* NSURLSessionTask+HZFURLSessionTaskStartTime.m in Sources */,
 				75E2ACE1231991FE00DF0EE0 /* HZFHTTPProtocol.m in Sources */,
 				75E2ACAD2319918200DF0EE0 /* AppDelegate.m in Sources */,
 			);
