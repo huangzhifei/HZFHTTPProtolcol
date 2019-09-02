@@ -6,14 +6,20 @@
 //  Copyright © 2019 huangzhifei. All rights reserved.
 //
 
+
 #import "HZFHTTPProtocol.h"
-#import "NSURLSessionTask+HZFURLSessionTaskStartTime.h"
+#import <CommonCrypto/CommonDigest.h>
 
 static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
 
 @interface HZFHTTPProtocol () <NSURLSessionTaskDelegate, NSURLSessionDataDelegate>
 
-@property (nonatomic, strong) NSURLSessionDataTask *dataTask;
+@property (nonatomic, strong) NSURLSessionTask *hzf_dataTask;
+@property (nonatomic, strong) NSURLRequest *hzf_request;
+@property (nonatomic, strong) NSURLResponse *hzf_response;
+@property (nonatomic, strong) NSMutableData *hzf_data;
+@property (nonatomic, assign) NSTimeInterval start_time;
+@property (nonatomic, copy) NSString *hzf_identifier;
 
 @end
 
@@ -41,17 +47,28 @@ static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
                                                           delegate:self
                                                      delegateQueue:nil];
     NSURLSessionDataTask *task = [session dataTaskWithRequest:self.request];
-    self.dataTask = task;
-    self.dataTask.hzf_startTime = [[NSDate date] timeIntervalSince1970];
-    NSLog(@"请求网络开始");
-    [self.dataTask resume];
+    self.hzf_dataTask = task;
+    self.hzf_request = self.request;
+    self.start_time = [[NSDate date] timeIntervalSince1970];
+    NSLog(@"protocol 请求接口开始->url: %@ identifier: %@", self.hzf_request, self.hzf_identifier);
+    [self.hzf_dataTask resume];
 }
 
 - (void)stopLoading {
-    NSTimeInterval cost = [[NSDate date] timeIntervalSince1970] - self.dataTask.hzf_startTime;
-    NSLog(@"请求网络耗时: %lfs, url: %@", cost , self.dataTask.currentRequest);
-    [self.dataTask cancel];
-    self.dataTask = nil;
+    [self.hzf_dataTask cancel];
+    NSTimeInterval cost = [[NSDate date] timeIntervalSince1970] - self.start_time;
+    //获取请求方法
+    NSString *requestMethod = self.hzf_request.HTTPMethod;
+    NSLog(@"protocol 请求接口结束->url: %@ method: %@ identifier: %@ cost: %lfms", self.hzf_request, requestMethod, self.hzf_identifier, cost * 1000);
+    
+    //获取请求头
+    NSDictionary *headers = self.hzf_request.allHTTPHeaderFields;
+    NSLog(@"请求头：\n");
+    for (NSString *key in headers.allKeys) {
+        NSLog(@"%@ : %@", key, headers[key]);
+    }
+
+    self.hzf_dataTask = nil;
 }
 
 #pragma mark - NSURLSessionTaskDelegate
@@ -60,11 +77,11 @@ static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
     if (!error) {
         [self.client URLProtocolDidFinishLoading:self];
     } else if ([error.domain isEqualToString:NSURLErrorDomain] && error.code == NSURLErrorCancelled) {
-
+        NSLog(@"protocol 请求接口错误->url: %@ identifier: %@", self.hzf_request, self.hzf_identifier);
     } else {
         [self.client URLProtocol:self didFailWithError:error];
     }
-    self.dataTask = nil;
+    self.hzf_dataTask = nil;
 }
 
 #pragma mark - NSURLSessionDataDelegate
@@ -79,6 +96,7 @@ static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
      completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler {
     [self.client URLProtocol:self didReceiveResponse:response cacheStoragePolicy:NSURLCacheStorageAllowed];
     completionHandler(NSURLSessionResponseAllow);
+    self.hzf_response = response;
 }
 
 - (void)URLSession:(NSURLSession *)session
@@ -86,6 +104,47 @@ static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
     willPerformHTTPRedirection:(NSHTTPURLResponse *)response
                     newRequest:(NSURLRequest *)request
              completionHandler:(void (^)(NSURLRequest *_Nullable))completionHandler {
+    if (response != nil) {
+        self.hzf_response = response;
+        [[self client] URLProtocol:self wasRedirectedToRequest:request redirectResponse:response];
+    }
+}
+
+#pragma mark - Getter & Setter
+
+- (NSString *)hzf_identifier {
+    if (!_hzf_identifier) {
+        _hzf_identifier = [[self hzf_MD5:[self generateIdentifier]] lowercaseString];
+    }
+    return _hzf_identifier;
+}
+
+- (NSString *)generateIdentifier {
+    NSString *result = nil;
+    CFUUIDRef uuid = CFUUIDCreate(NULL);
+    if (uuid) {
+        result = (__bridge_transfer NSString *) CFUUIDCreateString(NULL, uuid);
+        CFRelease(uuid);
+    }
+    if (result == nil) {
+        NSString *dateFormatterString = @"yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:dateFormatterString];
+        result = [formatter stringFromDate:[NSDate date]];
+    }
+    return result;
+}
+
+- (NSString *)hzf_MD5:(NSString *)originalString {
+    const char *cStr = [originalString UTF8String];
+    unsigned char digest[CC_MD5_DIGEST_LENGTH];
+    CC_MD5(cStr, (CC_LONG) strlen(cStr), digest);
+    NSMutableString *result = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH * 2];
+    for (int i = 0; i < CC_MD5_DIGEST_LENGTH; i++) {
+        [result appendFormat:@"%02x", digest[i]];
+    }
+    return result;
 }
 
 @end
+
