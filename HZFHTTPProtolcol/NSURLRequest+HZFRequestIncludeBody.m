@@ -11,10 +11,10 @@
 @implementation NSURLRequest (HZFRequestIncludeBody)
 
 - (NSURLRequest *)hzf_getPostRequestIncludeBody {
-    return [[self getMutablePostRequestIncludeBody] copy];
+    return [[self hzf_getMutablePostRequestIncludeBody] copy];
 }
 
-- (NSMutableURLRequest *)getMutablePostRequestIncludeBody {
+- (NSMutableURLRequest *)hzf_getMutablePostRequestIncludeBody {
     NSMutableURLRequest *request = [self mutableCopy];
     if ([self.HTTPMethod isEqualToString:@"POST"]) {
         if (!self.HTTPBody) {

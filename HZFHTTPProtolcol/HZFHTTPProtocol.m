@@ -67,7 +67,7 @@ static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
 + (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request {
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
     [NSURLProtocol setProperty:@(YES) forKey:HZFHTTPHandledIdentifier inRequest:mutableRequest];
-    return [mutableRequest getPostRequestIncludeBody];
+    return [mutableRequest hzf_getPostRequestIncludeBody];
 }
 
 /**
