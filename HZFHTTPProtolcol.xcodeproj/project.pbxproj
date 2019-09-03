@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		75419048231E56600004B54A /* NSURLRequest+HZFRequestIncludeBody.m in Sources */ = {isa = PBXBuildFile; fileRef = 75419047231E56600004B54A /* NSURLRequest+HZFRequestIncludeBody.m */; };
 		75E2ACAD2319918200DF0EE0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 75E2ACAC2319918200DF0EE0 /* AppDelegate.m */; };
 		75E2ACB02319918200DF0EE0 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 75E2ACAF2319918200DF0EE0 /* ViewController.m */; };
 		75E2ACB32319918200DF0EE0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75E2ACB12319918200DF0EE0 /* Main.storyboard */; };
@@ -37,6 +38,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		75419046231E56600004B54A /* NSURLRequest+HZFRequestIncludeBody.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSURLRequest+HZFRequestIncludeBody.h"; sourceTree = "<group>"; };
+		75419047231E56600004B54A /* NSURLRequest+HZFRequestIncludeBody.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSURLRequest+HZFRequestIncludeBody.m"; sourceTree = "<group>"; };
 		75E2ACA82319918200DF0EE0 /* HZFHTTPProtolcol.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HZFHTTPProtolcol.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75E2ACAB2319918200DF0EE0 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		75E2ACAC2319918200DF0EE0 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -109,6 +112,8 @@
 			children = (
 				75E2ACDF231991FE00DF0EE0 /* HZFHTTPProtocol.h */,
 				75E2ACDD231991FE00DF0EE0 /* HZFHTTPProtocol.m */,
+				75419046231E56600004B54A /* NSURLRequest+HZFRequestIncludeBody.h */,
+				75419047231E56600004B54A /* NSURLRequest+HZFRequestIncludeBody.m */,
 				75E2ACE0231991FE00DF0EE0 /* NSURLSessionConfiguration+HZFURLProtocolSwizzling.h */,
 				75E2ACDE231991FE00DF0EE0 /* NSURLSessionConfiguration+HZFURLProtocolSwizzling.m */,
 				75E2ACAB2319918200DF0EE0 /* AppDelegate.h */,
@@ -274,6 +279,7 @@
 			files = (
 				75E2ACE2231991FE00DF0EE0 /* NSURLSessionConfiguration+HZFURLProtocolSwizzling.m in Sources */,
 				75E2ACB02319918200DF0EE0 /* ViewController.m in Sources */,
+				75419048231E56600004B54A /* NSURLRequest+HZFRequestIncludeBody.m in Sources */,
 				75E2ACBB2319918400DF0EE0 /* main.m in Sources */,
 				75E2ACE1231991FE00DF0EE0 /* HZFHTTPProtocol.m in Sources */,
 				75E2ACAD2319918200DF0EE0 /* AppDelegate.m in Sources */,
