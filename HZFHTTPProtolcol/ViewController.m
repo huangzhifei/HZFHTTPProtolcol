@@ -42,7 +42,11 @@
     NSURL *url = [NSURL URLWithString:str];
     NSURLSessionDataTask *task = [session dataTaskWithURL:url
                                         completionHandler:^(NSData *_Nullable data, NSURLResponse *_Nullable response, NSError *_Nullable error) {
-                                            NSLog(@"业务1请求完成: %@", [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil]);
+                                            if (!error) {
+                                                NSLog(@"业务1请求完成: %@", [NSJSONSerialization JSONObjectWithData:data options:0 error:nil]);
+                                            } else {
+                                                NSLog(@"业务1请求出错: %@", error);
+                                            }
                                         }];
     [task resume];
 }
@@ -50,10 +54,12 @@
 - (void)onClickBtn2:(UIButton *)sender {
     NSURLSession *session = [NSURLSession sharedSession];
     // 创建下载路径
+    NSTimeInterval time_start = [[NSDate date] timeIntervalSince1970];
     NSURL *url = [NSURL URLWithString:@"https://upload-images.jianshu.io/upload_images/1877784-b4777f945878a0b9.jpg"];
     NSURLSessionDownloadTask *task = [session downloadTaskWithURL:url
                                                 completionHandler:^(NSURL *_Nullable location, NSURLResponse *_Nullable response, NSError *_Nullable error) {
-                                                    NSLog(@"业务2请求完成: %@", response);
+                                                    NSTimeInterval time_end = [[NSDate date] timeIntervalSince1970];
+                                                    NSLog(@"业务2请求完成: %lfs", time_end - time_start);
                                                 }];
     [task resume];
 }
