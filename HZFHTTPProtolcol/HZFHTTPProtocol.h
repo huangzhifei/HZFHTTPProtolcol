@@ -10,6 +10,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ 用来拦截所有的 URL 请求，自动在头里面增加了 request_id 和计算网络接口的耗时
+ */
 @interface HZFHTTPProtocol : NSURLProtocol
 
 + (void)start;

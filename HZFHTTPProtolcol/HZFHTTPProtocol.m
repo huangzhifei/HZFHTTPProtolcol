@@ -104,7 +104,7 @@ static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
     NSTimeInterval cost = [[NSDate date] timeIntervalSince1970] - self.start_time;
     //获取请求方法
     NSString *requestMethod = self.hzf_request.HTTPMethod;
-    NSLog(@"protocol 请求接口结束->url:%@ method:%@ identifier:%@ cost:%lfms", self.hzf_request.URL, requestMethod, self.hzf_identifier, cost * 1000);
+    NSLog(@"protocol 请求接口结束->url:%@ method:%@ identifier:%@ cost:%.3lfms", self.hzf_request.URL, requestMethod, self.hzf_identifier, cost * 1000);
     [self.hzf_dataTask cancel];
     self.hzf_dataTask = nil;
 }
