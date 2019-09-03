@@ -8,6 +8,7 @@
 
 #import "HZFHTTPProtocol.h"
 #import <CommonCrypto/CommonDigest.h>
+#import "NSURLRequest+HZFRequestIncludeBody.h"
 
 static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
 
@@ -66,7 +67,7 @@ static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
 + (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request {
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
     [NSURLProtocol setProperty:@(YES) forKey:HZFHTTPHandledIdentifier inRequest:mutableRequest];
-    return [mutableRequest copy];
+    return [mutableRequest getPostRequestIncludeBody];
 }
 
 /**
@@ -109,6 +110,11 @@ static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
 }
 
 #pragma mark - NSURLSessionTaskDelegate
+
+/**
+ UIWebview 中发送一个request，在这里拦截后使用NSURLSession重新发request。
+ 那UIWebview是收不到response的。这里就要做一个处理，每一个NSURLProtocol的子类都有一个client对象来处理response。
+*/
 
 /**
  请求结束或者是失败的时候调用
