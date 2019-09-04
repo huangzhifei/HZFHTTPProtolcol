@@ -123,6 +123,7 @@ static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
     if (!error) {
         [self.client URLProtocolDidFinishLoading:self];
     } else {
+        NSLog(@"protocol 请求接口失败->error: %@", error);
         [self.client URLProtocol:self didFailWithError:error];
     }
 }
