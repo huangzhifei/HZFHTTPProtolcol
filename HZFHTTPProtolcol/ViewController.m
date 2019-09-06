@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "HZFHTTPProtocol.h"
 
 @interface ViewController ()
 
@@ -16,24 +17,40 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
+    UIButton *btn0 = [UIButton buttonWithType:UIButtonTypeSystem];
+    [btn0 setTitle:@"注册NSURLProtocol" forState:UIControlStateNormal];
+    [btn0 addTarget:self action:@selector(onClickBtn0:) forControlEvents:UIControlEventTouchUpInside];
+    [btn0 setFrame:CGRectMake(50, 50, 150, 40)];
+    [self.view addSubview:btn0];
+    
     UIButton *btn1 = [UIButton buttonWithType:UIButtonTypeSystem];
     [btn1 setTitle:@"NSURLSessionTask" forState:UIControlStateNormal];
     [btn1 addTarget:self action:@selector(onClickBtn1:) forControlEvents:UIControlEventTouchUpInside];
-    [btn1 setFrame:CGRectMake(50, 100, 150, 40)];
+    [btn1 setFrame:CGRectMake(50, 150, 150, 40)];
     [self.view addSubview:btn1];
 
     UIButton *btn2 = [UIButton buttonWithType:UIButtonTypeSystem];
     [btn2 setTitle:@"NSURLSessionDownTask" forState:UIControlStateNormal];
     [btn2 addTarget:self action:@selector(onClickBtn2:) forControlEvents:UIControlEventTouchUpInside];
-    [btn2 setFrame:CGRectMake(50, 200, 200, 40)];
+    [btn2 setFrame:CGRectMake(50, 250, 200, 40)];
     [self.view addSubview:btn2];
 
     UIButton *btn3 = [UIButton buttonWithType:UIButtonTypeSystem];
     [btn3 setTitle:@"NSURLConnection" forState:UIControlStateNormal];
     [btn3 addTarget:self action:@selector(onClickBtn3:) forControlEvents:UIControlEventTouchUpInside];
-    [btn3 setFrame:CGRectMake(50, 300, 150, 40)];
+    [btn3 setFrame:CGRectMake(50, 350, 150, 40)];
     [self.view addSubview:btn3];
+    
+    UIButton *btn4 = [UIButton buttonWithType:UIButtonTypeSystem];
+    [btn4 setTitle:@"卸载NSURLProtocol" forState:UIControlStateNormal];
+    [btn4 addTarget:self action:@selector(onClickBtn4:) forControlEvents:UIControlEventTouchUpInside];
+    [btn4 setFrame:CGRectMake(50, 450, 150, 40)];
+    [self.view addSubview:btn4];
+}
+
+- (void)onClickBtn0:(UIButton *)sender {
+    [HZFHTTPProtocol start];
 }
 
 - (void)onClickBtn1:(UIButton *)sender {
@@ -73,6 +90,10 @@
                            completionHandler:^(NSURLResponse *_Nullable response, NSData *_Nullable data, NSError *_Nullable connectionError) {
                                NSLog(@"业务3请求完成: %@", [UIImage imageWithData:data]);
                            }];
+}
+
+- (void)onClickBtn4:(UIButton *)sender {
+    [HZFHTTPProtocol end];
 }
 
 @end

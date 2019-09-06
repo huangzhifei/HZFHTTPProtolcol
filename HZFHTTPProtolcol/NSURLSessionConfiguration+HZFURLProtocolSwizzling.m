@@ -16,20 +16,23 @@
  然而我们通过[NSURLSession sharedSession]生成session就可以拦截到请求，原因就出在NSURLSessionConfiguration上。
  他有一个属性 protocolClasses
  */
+
+/*
+ 通过分类的方法交互不可控制，改用类来控制
+ */
 @implementation NSURLSessionConfiguration (HZFURLProtocolSwizzling)
 
-+ (void)load {
-    Method originalMethod = class_getClassMethod([self class], @selector(defaultSessionConfiguration));
-    Method swizzledMethod = class_getClassMethod([self class], @selector(hook_defaultSessionConfiguration));
-    method_exchangeImplementations(originalMethod, swizzledMethod);
-    [NSURLProtocol registerClass:[HZFHTTPProtocol class]];
-}
-
-+ (NSURLSessionConfiguration *)hook_defaultSessionConfiguration {
-    NSURLSessionConfiguration *configuration = [self hook_defaultSessionConfiguration];
-    NSArray *protocolClasses = @[ [HZFHTTPProtocol class] ];
-    configuration.protocolClasses = protocolClasses;
-    return configuration;
-}
+//+ (void)load {
+//    Method originalMethod = class_getClassMethod([self class], @selector(defaultSessionConfiguration));
+//    Method swizzledMethod = class_getClassMethod([self class], @selector(hook_defaultSessionConfiguration));
+//    method_exchangeImplementations(originalMethod, swizzledMethod);
+//}
+//
+//+ (NSURLSessionConfiguration *)hook_defaultSessionConfiguration {
+//    NSURLSessionConfiguration *configuration = [self hook_defaultSessionConfiguration];
+//    NSArray *protocolClasses = @[ [HZFHTTPProtocol class] ];
+//    configuration.protocolClasses = protocolClasses;
+//    return configuration;
+//}
 
 @end

@@ -9,8 +9,10 @@
 #import "HZFHTTPProtocol.h"
 #import <CommonCrypto/CommonDigest.h>
 #import "NSURLRequest+HZFRequestIncludeBody.h"
+#import "HZFURLSessionConfiguration.h"
 
 static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
+static NSArray<NSString *> *globalDomains = nil;
 
 /**
  NSURLProtocol：就是一个苹果允许的中间人攻击。
@@ -31,11 +33,23 @@ static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
 @implementation HZFHTTPProtocol
 
 + (void)start {
+    HZFURLSessionConfiguration *sessionConfiguration = [HZFURLSessionConfiguration defaultConfiguration];
     [NSURLProtocol registerClass:[self class]];
+    if (![sessionConfiguration isSwizzle]) {
+        [sessionConfiguration loadMethod];
+    }
 }
 
 + (void)end {
+    HZFURLSessionConfiguration *sessionConfiguration = [HZFURLSessionConfiguration defaultConfiguration];
     [NSURLProtocol unregisterClass:[self class]];
+    if ([sessionConfiguration isSwizzle]) {
+        [sessionConfiguration unloadMethod];
+    }
+}
+
++ (void)interceptDomainWhiteList:(NSArray<NSString *> *)domainList {
+    globalDomains = [domainList copy];
 }
 
 /**
@@ -45,6 +59,7 @@ static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
  @return 是否能处理
  */
 + (BOOL)canInitWithRequest:(NSURLRequest *)request {
+    // 只拦截 HTTP、HTTPS
     if (![request.URL.scheme isEqualToString:@"http"] &&
         ![request.URL.scheme isEqualToString:@"https"]) {
         return NO;
@@ -55,7 +70,14 @@ static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
         return NO;
     }
 
-    return YES;
+    // 只拦截白名单的域名（如果有白名单）
+    if (globalDomains && globalDomains.count && [self hzf_domainContainsObject:request.URL]) {
+        return YES;
+    } else if (!globalDomains || globalDomains.count <= 0) {
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 /**
@@ -92,7 +114,7 @@ static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
     NSURLSessionDataTask *task = [session dataTaskWithRequest:self.hzf_request];
     self.hzf_dataTask = task;
     self.start_time = [[NSDate date] timeIntervalSince1970];
-    NSLog(@"protocol 请求接口开始->url: %@ identifier: %@", self.hzf_request.URL, self.hzf_identifier);
+    NSLog(@"protocol 请求接口开始->url: %@ identifier: %@\n", self.hzf_request.URL, self.hzf_identifier);
     [self.hzf_dataTask resume];
 }
 
@@ -104,7 +126,7 @@ static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
     NSTimeInterval cost = [[NSDate date] timeIntervalSince1970] - self.start_time;
     //获取请求方法
     NSString *requestMethod = self.hzf_request.HTTPMethod;
-    NSLog(@"protocol 请求接口结束->url:%@ method:%@ identifier:%@ cost:%.3lfms", self.hzf_request.URL, requestMethod, self.hzf_identifier, cost * 1000);
+    NSLog(@"protocol 请求接口结束->url:%@ method:%@ identifier:%@ cost:%.3lfms\n", self.hzf_request.URL, requestMethod, self.hzf_identifier, cost * 1000);
     [self.hzf_dataTask cancel];
     self.hzf_dataTask = nil;
 }
@@ -123,7 +145,7 @@ static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
     if (!error) {
         [self.client URLProtocolDidFinishLoading:self];
     } else {
-        NSLog(@"protocol 请求接口失败->error: %@", error);
+        NSLog(@"protocol 请求接口失败->error: %@\n", error);
         [self.client URLProtocol:self didFailWithError:error];
     }
 }
@@ -161,6 +183,17 @@ static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
     }
 }
 
+- (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
+ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential *_Nullable))completionHandler {
+    /*信任所有证书*/
+    if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+        NSURLCredential *credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
+        if (completionHandler) {
+            completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
+        }
+    }
+}
+
 #pragma mark - Getter & Setter
 
 - (NSString *)hzf_identifier {
@@ -195,6 +228,20 @@ static NSString *const HZFHTTPHandledIdentifier = @"HZFHTTPHandledIdentifier";
         [result appendFormat:@"%02x", digest[i]];
     }
     return result;
+}
+
+#pragma mark - Public Method
+
++ (BOOL)hzf_domainContainsObject:(NSURL *)targetURL {
+    __block BOOL isFind = NO;
+    [globalDomains enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString *host = [targetURL host];
+        if ([obj containsString:host]) {
+            isFind = YES;
+            *stop = YES;
+        }
+    }];
+    return isFind;
 }
 
 @end

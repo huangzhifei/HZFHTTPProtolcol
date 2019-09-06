@@ -19,6 +19,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)end;
 
+/**
+ 不设置或传空，则默认拦截所有的 url load system
+ 
+ @param domainList 白名单
+ */
++ (void)interceptDomainWhiteList:(NSArray<NSString *> *)domainList;
+
 @end
 
 NS_ASSUME_NONNULL_END
